@@ -8,6 +8,19 @@
 </head>
 <body>
         <h1>LISTAS</h1>
+
+        <input type="text" id="num" value="" placeholder="Entero"/>
+        <button id="addButton" onclick="addNumber (document.getElementById ('num').value); cleanData(); selectAdd()">Añadir</button>
+        <button id="removeButton" onclick="removeNumber ();">Consumir</button><br>
+        <input type="text" id="numAt" value="" placeholder="Entero"/>
+        <button id="addAtButton" onclick="addAtNumber (document.getElementById('numAt').value, document.getElementById ('pos').value); cleanData(); selectAdd()">Añadir en</button>
+        <select id="pos"></select>
+        <!-- INPUT CON BUSCAR, Que aparezca "La posicion del elemento es: *Nota: -1 es que no ha sido encontrado
+        Boton test con todas las demas comprobaciones
+        Añadir boton para borrar elementos -->
+
+        <p id="error" style="color:red"></p>
+        <p id="list"></p>
         
     <script src="listas.js"></script>
     

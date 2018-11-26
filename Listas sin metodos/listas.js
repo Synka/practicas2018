@@ -2,6 +2,60 @@
 
 var MAX_SIZE_LIST = 5;
 
+/* Page functions */
+var NUMBERS_LIST = create();
+function cleanData(){
+    document.getElementById ("num").value = "" ;  
+}
+var d = 0;
+function selectAdd(){
+    
+    var length = size(NUMBERS_LIST);
+    while (d <= length && d < MAX_SIZE_LIST){
+        document.getElementById("pos").innerHTML += "<option>" + d + "</option";
+        d++;
+    }
+}
+
+function addNumber(num){
+   var error = document.getElementById ("error");
+   var list = document.getElementById ("list");
+   error.innerHTML = "";  
+    try {
+        add(NUMBERS_LIST,num);
+        list.innerHTML = toString(NUMBERS_LIST);
+    } catch (err) {
+        error.innerHTML = err;
+    }	
+}
+function addAtNumber(num, index){
+    var error = document.getElementById ("error");
+    var list = document.getElementById ("list");
+    index = parseInt(index);
+    
+    error.innerHTML = "";  
+     try {
+         addAt(NUMBERS_LIST,num,index);
+         list.innerHTML = toString(NUMBERS_LIST);
+     } catch (err) {
+         error.innerHTML = err;
+     }
+ }
+
+function removeNumber (){
+   var error = document.getElementById ("error");
+   var list = document.getElementById ("list");
+   error.innerHTML = "";  
+    try {
+        remove(NUMBERS_LIST, size(NUMBERS_LIST)-1);
+        list.innerHTML = toString(NUMBERS_LIST);
+    } catch (err) {
+        error.innerHTML = err;
+    }		
+}
+
+/* List functions */
+
 function create() {
     var list = [];
     for (var i = 0; i < MAX_SIZE_LIST; i++) {
@@ -38,6 +92,7 @@ function size(list) {
 }
 
 function add(list, elem) {
+    elem = parseInt(elem);
     if (isNaN(elem)) {
         throw "Sorry, the element isn't a number";
     }
@@ -51,6 +106,7 @@ function add(list, elem) {
 }
 
 function addAt(list, elem, index) {
+    elem = parseInt(elem);
     var aux, aux2;
     if (index > MAX_SIZE_LIST) {
         throw "Sorry, the index is longer than the max size";
@@ -227,7 +283,7 @@ function set(list, elem, index) {
 }
 
 function test() {
-    var list = create();
+    var list = [];
 
     console.log("Probamos isEmpty");
     console.log(isEmpty(list));
