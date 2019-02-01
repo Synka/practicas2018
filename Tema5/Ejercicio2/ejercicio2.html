@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown a:hover {
+            background-color: #2271b3;
+        }
+
+        .show {
+            display: block;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #111;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dropdown">
+        <ul>
+            <li><a class="active" href="#home">HOME</a></li>
+            <li onmouseleave="subout()"><a onmouseenter="sub()" href="#news">MENU</a>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="#home">Menu 1</a>
+                    <a href="#about">Menu 2</a>
+                </div>
+            </li>
+            <li><a href="#contact">SETTING</a></li>
+            <li><a href="#about">CONTACT</a></li>
+        </ul>
+    </div>
+    <script>
+        function sub() {
+            document.getElementById("myDropdown").className += " show";
+        }
+
+        function subout() {
+            document.getElementById("myDropdown").classList.remove("show");
+        }
+    </script>
+</body>
+
+</html>
