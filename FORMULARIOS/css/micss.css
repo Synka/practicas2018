@@ -1,0 +1,58 @@
+body {
+    padding-top: 60px;
+}
+
+p{
+    font-weight: bold;
+    font-size: 15px;
+}
+
+/*img{
+max-width: 400px;
+max-height: 400px;
+}
+.thumbnail {
+    padding: 0;
+}*/
+
+#divcat {
+    text-align: center;
+}
+
+.carousel-holder {
+    margin-bottom: 30px;
+}
+
+.carousel-control,
+.item {
+    border-radius: 4px;
+}
+
+.caption h4 {
+    white-space: nowrap;
+}
+
+.ratings {
+    padding-right: 10px;
+    padding-left: 10px;
+    color: #739f12;
+}
+
+.thumbnail .caption-full {
+    padding: 9px;
+    color: #333;
+}
+
+#myCarousel a{
+    color: #ffffff;
+}
+
+#accordion > div{
+    margin-top: 0px;
+    
+}
+
+footer {
+    margin: 50px 0;
+    text-align: center;
+}
