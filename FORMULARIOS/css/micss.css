@@ -52,7 +52,15 @@ max-height: 400px;
     
 }
 
+#smallInfo{
+    margin-bottom: 10px;
+}
+
 footer {
     margin: 50px 0;
     text-align: center;
+}
+
+.has-error input[type="text"], .has-error input[type="email"], .has-error select {
+    border: 1px solid #a94442;
 }

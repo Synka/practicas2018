@@ -7,6 +7,68 @@ function removeChildsElement(element) {
     }
 }
 
+function actDir() {
+    var form = document.getElementById("sel");
+
+    var id = form.options[form.options.selectedIndex].text;
+
+    var directors = videosystem.directors;
+    var director = directors.next();
+    var found = false;
+
+    while (found !== true) {
+        if (director.value.name + " " + director.value.lastname === id) {
+            document.forms["dirForm"]["name"].value = director.value.name;
+            document.forms["dirForm"]["lastname"].value = director.value.lastname;
+            var born = director.value.born;
+
+            document.forms["dirForm"]["born"].value = born.toISOString().slice(0, 10);
+            found = true;
+        }
+        director = directors.next();
+    }
+}
+
+function actAct() {
+    var form = document.getElementById("sel");
+
+    var id = form.options[form.options.selectedIndex].text;
+
+    var actors = videosystem.actors;
+    var actor = actors.next();
+    var found = false;
+
+    while (found !== true) {
+        if (actor.value.name + " " + actor.value.lastname === id) {
+            document.forms["actForm"]["name"].value = actor.value.name;
+            document.forms["actForm"]["lastname"].value = actor.value.lastname;
+            var born = actor.value.born;
+            document.forms["actForm"]["born"].value = born.toISOString().slice(0, 10);
+            found = true;
+        }
+        actor = actors.next();
+    }
+}
+
+function actCat() {
+    var form = document.getElementById("sel");
+
+    var id = form.options[form.options.selectedIndex].text;
+
+    var categories = videosystem.categories;
+    var category = categories.next();
+    var found = false;
+
+    while (found !== true) {
+        if (category.value.name === id) {
+            document.forms["catForm"]["name"].value = category.value.name;
+            document.forms["catForm"]["description"].value = category.value.description;
+            found = true;
+        }
+        category = categories.next();
+    }
+}
+
 function hasResource(form) {
     var dv = document.createElement("div");
     dv.setAttribute("class", "form-group");
@@ -77,7 +139,18 @@ function hasNotResource(form) {
     form.appendChild(dv);
 }
 
-function createInput(labelIn, inputName, form) {
+function createSmall(form) {
+    var div = document.createElement("div");
+    div.setAttribute("id", "smallInfo");
+    var small = document.createElement("small");
+    small.setAttribute("class", "text-muted");
+
+    small.appendChild(document.createTextNode("Los campos marcados con * son obligatorios."));
+    div.appendChild(small);
+    form.appendChild(div);
+}
+
+function createInput(labelIn, inputName, form, placeholder, required, M) {
     var dv = document.createElement("div");
     dv.setAttribute("class", "form-group");
 
@@ -93,8 +166,98 @@ function createInput(labelIn, inputName, form) {
     input.setAttribute("type", "text");
     input.setAttribute("class", "form-control");
     input.setAttribute("name", inputName);
+    input.setAttribute("aria-describedby", "mayus");
+    input.setAttribute("placeholder", placeholder);
 
     dv1.appendChild(input);
+
+    if (M == "M") {
+        function firstMayus(){
+            input.value = input.value.charAt(0).toUpperCase() + input.value.slice(1);
+        }
+        input.addEventListener("focusout", firstMayus);
+    } else if (M == "MULT") {
+        var cont = 0;
+        function mayus() {
+            input.value = input.value.toUpperCase();
+            if ((event.keyCode || event.charCode || event.which) != 8) {
+                cont++;
+            } else {
+                cont = 0;
+            }
+            if (cont % 2 == 0 && cont != 0) {
+                input.value += ",";
+            }
+        }
+
+        var small = document.createElement("small");
+        small.setAttribute("id", "dos");
+        small.setAttribute("class", "text-muted");
+        small.appendChild(document.createTextNode("Solo se permiten dos letras"));
+        dv1.appendChild(small);
+        input.addEventListener("keyup", mayus);
+    } else if (M == "D") {
+        function mayus() {
+            input.value = input.value.toUpperCase();
+        }
+
+        var small = document.createElement("small");
+        small.setAttribute("id", "dos");
+        small.setAttribute("class", "text-muted");
+        small.appendChild(document.createTextNode("Solo se permiten dos letras"));
+        dv1.appendChild(small);
+        input.setAttribute("maxlength", 2);
+        input.addEventListener("keyup", mayus);
+    }else if (M == "I"){
+        input.type = "file";
+    }
+
+    if (required == "required") {
+        var span = document.createElement("span");
+        span.appendChild(document.createTextNode(" *"));
+        label.appendChild(span);
+        input.required = true; 
+
+        input.setAttribute("data-error", "Lo sentimos, este campo no puede estar vacío");
+        var div = document.createElement("div");
+        div.setAttribute("class", "help-block with-errors");
+        dv1.appendChild(div);
+    }
+    dv.appendChild(dv1);
+    form.appendChild(dv);
+}
+
+function createDate(labelIn, inputName, form, required) {
+    var dv = document.createElement("div");
+    dv.setAttribute("class", "form-group");
+
+    var label = document.createElement("label");
+    label.setAttribute("class", "control-label col-sm-2");
+    label.appendChild(document.createTextNode(labelIn));
+    dv.appendChild(label);
+
+    var dv1 = document.createElement("div");
+    dv1.setAttribute("class", "col-sm-4");
+
+    var input = document.createElement("input");
+    input.setAttribute("type", "date");
+    input.setAttribute("class", "form-control");
+    input.setAttribute("name", inputName);
+    dv1.appendChild(input);
+
+    if (required == "required") {
+        var span = document.createElement("span");
+        span.appendChild(document.createTextNode(" *"));
+        label.appendChild(span);
+        input.required = true; 
+
+        input.setAttribute("data-error", "Lo sentimos, este campo no puede estar vacío");
+        var div = document.createElement("div");
+        div.setAttribute("class", "help-block with-errors");
+        dv1.appendChild(div);
+    }
+
+    
     dv.appendChild(dv1);
     form.appendChild(dv);
 }
@@ -212,9 +375,10 @@ function createButton(func, form) {
     var dv1 = document.createElement("div");
     dv1.setAttribute("class", "col-sm-offset-5");
 
-    var a = document.createElement("a");
-    a.appendChild(document.createTextNode("Enviar"));
-    a.setAttribute("class", "btn btn-default");
+    var a = document.createElement("input");
+    a.setAttribute("value", "Enviar");
+    a.setAttribute("class", "btn btn-primary");
+    a.setAttribute("type", "submit");
     a.addEventListener("click", func());
 
     dv1.appendChild(a);
@@ -222,7 +386,7 @@ function createButton(func, form) {
     form.appendChild(dv);
 }
 
-function createSelect(form, type, name, lab) {
+function createSelect(form, type, name, lab, func) {
     var dv = document.createElement("div");
     dv.setAttribute("class", "form-group");
 
@@ -237,6 +401,7 @@ function createSelect(form, type, name, lab) {
     var select = document.createElement("select");
     select.setAttribute("class", "form-control");
     select.setAttribute("name", name);
+    select.setAttribute("id", "sel");
 
     if (type == "Categories") {
         var categories = videosystem.categories;
@@ -249,6 +414,10 @@ function createSelect(form, type, name, lab) {
             select.appendChild(option);
 
             category = categories.next();
+        }
+
+        if (func == "upd") {
+            select.addEventListener("change", actCat);
         }
     }
 
@@ -265,6 +434,10 @@ function createSelect(form, type, name, lab) {
 
             actor = actors.next();
         }
+
+        if (func == "upd") {
+            select.addEventListener("change", actAct);
+        }
     }
 
     if (type == "Directors") {
@@ -279,6 +452,10 @@ function createSelect(form, type, name, lab) {
             select.appendChild(option);
 
             director = directors.next();
+        }
+
+        if (func == "upd") {
+            select.addEventListener("change", actDir);
         }
     }
 
@@ -320,17 +497,22 @@ function addCategoryForm() {
         return function () {
             var name = document.forms["catForm"]["name"].value;
             var description = document.forms["catForm"]["description"].value;
+            $('form').validator();
 
-            if (name == "" || description == "") {
+            if (name == "") {
                 resultForm(false);
                 throw new EmptyValueException();
             } else {
                 var cat = new Category(name);
-                cat.description = description;
+                if (description != "") {
+                    cat.description = description;
+                }
+
                 videosystem.addCategory(cat);
                 resultForm(true);
             }
             document.forms["catForm"].reset();
+            event.preventDefault();
         }
     }
 
@@ -340,15 +522,19 @@ function addCategoryForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Create category"));
+        h2.appendChild(document.createTextNode("Añadir categoría"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("name", "catForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("data-toggle", "validator");
+        form.setAttribute("novalidate", "true");
+        form.setAttribute("method", "post");
+        createSmall(form);
+        createInput("Nombre", "name", form, "Nombre de la categoría", "required");
+        createInput("Descripción", "description", form, "Breve descripción");
 
-        createInput("Name", "name", form);
-        createInput("Description", "description", form);
         createButton(addCategory, form);
 
         var p = document.createElement("p");
@@ -365,9 +551,10 @@ function updCategoryForm() {
     function updCategory() {
         return function () {
             var form = document.forms["catForm"]["selectPrin"];
-            var id = form.value;
+            var id = form.options[form.options.selectedIndex].text;
             var name = document.forms["catForm"]["name"].value;
             var description = document.forms["catForm"]["description"].value;
+            $('form').validator();
 
             if (name == "" || id == "") {
                 resultForm(false);
@@ -386,7 +573,9 @@ function updCategoryForm() {
 
                 if (aux !== -1) {
                     aux.name = name;
-                    aux.description = description;
+                    if (description != "") {
+                        aux.description = description;
+                    }
                     resultForm(true);
                 } else {
                     resultForm(false);
@@ -394,7 +583,7 @@ function updCategoryForm() {
                 }
             }
             form.options[form.options.selectedIndex].text = name;
-            document.forms["catForm"].reset();
+            event.preventDefault();
         }
     }
 
@@ -404,16 +593,22 @@ function updCategoryForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Update category"));
+        h2.appendChild(document.createTextNode("Modificar categoría"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("name", "catForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("data-toggle", "validator");
+        form.setAttribute("novalidate", "true");
+        form.setAttribute("method", "post");
 
-        createSelect(form, "Categories", "selectPrin", "Lista de Categorias");
-        createInput("Name", "name", form);
-        createInput("Description", "description", form);
+        createSmall(form);
+
+        createSelect(form, "Categories", "selectPrin", "Lista de Categorias", "upd");
+        createInput("Nombre", "name", form, "Nombre de la categoría", "required");
+        createInput("Descripción", "description", form, "Breve descripción");
+
         createButton(updCategory, form);
 
         var p = document.createElement("p");
@@ -422,6 +617,7 @@ function updCategoryForm() {
         form.appendChild(p);
 
         divForm.appendChild(form);
+        actCat();
     }
 }
 
@@ -457,6 +653,7 @@ function delCategoryForm() {
                 }
             }
             form.options[form.options.selectedIndex].remove();
+            event.preventDefault();
         }
     }
 
@@ -466,12 +663,13 @@ function delCategoryForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Delete category"));
+        h2.appendChild(document.createTextNode("Eliminar categoría"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("name", "catForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("method", "post");
 
         createSelect(form, "Categories", "selectPrin", "Lista de categorias");
         createButton(delCategory, form);
@@ -491,13 +689,22 @@ function addActorForm() {
             var name = document.forms["actForm"]["name"].value;
             var lastname = document.forms["actForm"]["lastname"].value;
             var born = document.forms["actForm"]["born"].value;
+            var image = document.forms["actForm"]["image"].value;
+            var imagePart = image.split("\\");
+            var imageLoc = imagePart[imagePart.length-1];
+            $('form').validator();
 
             if (name == "" || lastname == "" || born == "") {
                 resultForm(false);
                 throw new EmptyValueException();
             } else {
                 var act = new Person(name, lastname, born);
-                act.picture = "images/default.jpg";
+                if (image != ""){
+                    act.picture = "images/" + imageLoc;
+                }else {
+                    act.picture = "images/default.jpg";
+                }
+                
                 videosystem.addActor(act);
                 //Productions Seleccionadas
                 var producciones = document.getElementById("tbody").getElementsByTagName('input');
@@ -523,6 +730,7 @@ function addActorForm() {
                 resultForm(true);
             }
             document.forms["actForm"].reset();
+            event.preventDefault();
         }
     }
 
@@ -532,17 +740,24 @@ function addActorForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Create actor"));
+        h2.appendChild(document.createTextNode("Añadir actor"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("name", "actForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("data-toggle", "validator");
+        form.setAttribute("novalidate", "true");
+        form.setAttribute("method", "post");
 
-        createInput("Name", "name", form);
-        createInput("Lastname", "lastname", form);
-        createInput("Born", "born", form);
-        createTable("Productions", "productions", form);
+        createSmall(form);
+
+        createInput("Nombre", "name", form, "Nombre", "required", "M");
+        createInput("Apellidos", "lastname", form, "Apellidos", "required", "M");
+        createDate("F. Nacimiento", "born", form, "required");
+        createInput("Imagen", "image", form, "Imagen del actor", "", "I");
+        createTable("Producciones", "productions", form);
+
         createButton(addActor, form);
 
         var p = document.createElement("p");
@@ -559,10 +774,11 @@ function updActorForm() {
     function updActor() {
         return function () {
             var form = document.forms["actForm"]["selectPrin"];
-            var id = form.value;
+            var id = form.options[form.options.selectedIndex].text;
             var name = document.forms["actForm"]["name"].value;
             var lastname = document.forms["actForm"]["lastname"].value;
-            var born = document.forms["actForm"]["born"].value;
+            var born = new Date(document.forms["actForm"]["born"].value);
+            $('form').validator();
 
             if (name == "" || lastname == "" || born == "") {
                 resultForm(false);
@@ -590,7 +806,7 @@ function updActorForm() {
                 }
             }
             form.options[form.options.selectedIndex].text = name + " " + lastname;
-            document.forms["actForm"].reset();
+            event.preventDefault();
         }
     }
 
@@ -600,17 +816,23 @@ function updActorForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Update actor"));
+        h2.appendChild(document.createTextNode("Modificar actor"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("name", "actForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("data-toggle", "validator");
+        form.setAttribute("novalidate", "true");
+        form.setAttribute("method", "post");
 
-        createSelect(form, "Actors", "selectPrin", "Lista de Actores");
-        createInput("Name", "name", form);
-        createInput("Lastname", "lastname", form);
-        createInput("Born", "born", form);
+        createSmall(form);
+
+        createSelect(form, "Actors", "selectPrin", "Lista de Actores", "upd");
+        createInput("Nombre", "name", form, "Nombre", "required", "M");
+        createInput("Apellidos", "lastname", form, "Apellidos", "required", "M");
+        createDate("F. Nacimiento", "born", form, "required");
+
         createButton(updActor, form);
 
         var p = document.createElement("p");
@@ -619,6 +841,7 @@ function updActorForm() {
         form.appendChild(p);
 
         divForm.appendChild(form);
+        actAct();
     }
 }
 
@@ -654,6 +877,7 @@ function delActorForm() {
                 }
             }
             form.options[form.options.selectedIndex].remove();
+            event.preventDefault();
         }
     }
 
@@ -663,7 +887,7 @@ function delActorForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Delete actor"));
+        h2.appendChild(document.createTextNode("Eliminar actor"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
@@ -688,13 +912,21 @@ function addDirectorForm() {
             var name = document.forms["dirForm"]["name"].value;
             var lastname = document.forms["dirForm"]["lastname"].value;
             var born = document.forms["dirForm"]["born"].value;
+            var image = document.forms["dirForm"]["image"].value;
+            var imagePart = image.split("\\");
+            var imageLoc = imagePart[imagePart.length-1];
+            $('form').validator();
 
             if (name == "" || lastname == "" || born == "") {
                 resultForm(false);
                 throw new EmptyValueException();
             } else {
                 var dir = new Person(name, lastname, born);
-                dir.picture = "images/default.jpg";
+                if (image != ""){
+                    dir.picture = "images/" + imageLoc;
+                }else {
+                    dir.picture = "images/default.jpg";
+                }
                 videosystem.addDirector(dir);
                 //Productions Seleccionadas
                 var producciones = document.getElementById("tbody").getElementsByTagName('input');
@@ -720,6 +952,7 @@ function addDirectorForm() {
                 resultForm(true);
             }
             document.forms["dirForm"].reset();
+            event.preventDefault();
         }
     }
 
@@ -729,17 +962,24 @@ function addDirectorForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Create director"));
+        h2.appendChild(document.createTextNode("Añadir director"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("name", "dirForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("data-toggle", "validator");
+        form.setAttribute("novalidate", "true");
+        form.setAttribute("method", "post");
 
-        createInput("Name", "name", form);
-        createInput("Lastname", "lastname", form);
-        createInput("Born", "born", form);
-        createTable("Productions", "productions", form);
+        createSmall(form);
+
+        createInput("Nombre", "name", form, "Nombre", "required", "M");
+        createInput("Apellidos", "lastname", form, "Apellidos", "required", "M");
+        createDate("F. Nacimiento", "born", form, "required");
+        createInput("Imagen", "image", form, "Imagen del director", "", "I");
+        createTable("Producciones", "productions", form);
+
         createButton(addDirector, form);
 
         var p = document.createElement("p");
@@ -756,10 +996,11 @@ function updDirectorForm() {
     function updDirector() {
         return function () {
             var form = document.forms["dirForm"]["selectPrin"];
-            var id = form.value;
+            var id = form.options[form.options.selectedIndex].text;
             var name = document.forms["dirForm"]["name"].value;
             var lastname = document.forms["dirForm"]["lastname"].value;
-            var born = document.forms["dirForm"]["born"].value;
+            var born = new Date(document.forms["dirForm"]["born"].value);
+            $('form').validator();
 
             if (name == "" || lastname == "" || born == "") {
                 resultForm(false);
@@ -787,7 +1028,7 @@ function updDirectorForm() {
                 }
             }
             form.options[form.options.selectedIndex].text = name + " " + lastname;
-            document.forms["dirForm"].reset();
+            event.preventDefault();
         }
     }
 
@@ -797,17 +1038,23 @@ function updDirectorForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Update director"));
+        h2.appendChild(document.createTextNode("Modificar director"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("name", "dirForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("data-toggle", "validator");
+        form.setAttribute("novalidate", "true");
+        form.setAttribute("method", "post");
 
-        createSelect(form, "Directors", "selectPrin", "Lista de Directores");
-        createInput("Name", "name", form);
-        createInput("Lastname", "lastname", form);
-        createInput("Born", "born", form);
+        createSmall(form);
+
+        createSelect(form, "Directors", "selectPrin", "Lista de Directores", "upd");
+        createInput("Nombre", "name", form, "Nombre", "required", "M");
+        createInput("Apellidos", "lastname", form, "Apellidos", "required", "M");
+        createDate("F. Nacimiento", "born", form, "required");
+
         createButton(updDirector, form);
 
         var p = document.createElement("p");
@@ -816,6 +1063,7 @@ function updDirectorForm() {
         form.appendChild(p);
 
         divForm.appendChild(form);
+        actDir();
     }
 }
 
@@ -851,6 +1099,7 @@ function delDirectorForm() {
                 }
             }
             form.options[form.options.selectedIndex].remove();
+            event.preventDefault();
         }
     }
 
@@ -860,7 +1109,7 @@ function delDirectorForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Delete director"));
+        h2.appendChild(document.createTextNode("Eliminar director"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
@@ -887,13 +1136,32 @@ function addResourceForm() {
             var id = form.value;
             var duration = document.forms["resForm"]["duration"].value;
             var link = document.forms["resForm"]["link"].value;
-
-            var res = new Resources(duration, link);
+            var audio = document.forms["resForm"]["audio"].value;
+            var subtitulo = document.forms["resForm"]["subtitle"].value;
+            $('form').validator();
 
             if (duration == "" || link == "") {
                 resultForm(false);
                 throw new EmptyValueException();
             } else {
+                var res = new Resources(duration, link);
+
+                if (audio != ""){
+                    var aud = audio.split(",").filter(Boolean);
+
+                    for (var x = 0; x < aud.length; x++) {
+                        res.audios.push(aud[x]);
+                    }
+                }
+
+                if (subtitulo != ""){
+                    var subs = subtitulo.split(",").filter(Boolean);
+
+                    for (var x = 0; x < subs.length; x++) {
+                        res.subtitles.push(subs[x]);
+                    }
+                }
+
                 var productions = videosystem.productions;
                 var production = productions.next();
                 var aux = -1;
@@ -915,6 +1183,7 @@ function addResourceForm() {
             }
             form.options[form.options.selectedIndex].remove();
             document.forms["resForm"].reset();
+            event.preventDefault();
         }
     }
 
@@ -924,16 +1193,25 @@ function addResourceForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Add resource"));
+        h2.appendChild(document.createTextNode("Añadir recurso"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("name", "resForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("data-toggle", "validator");
+        form.setAttribute("novalidate", "true");
+        form.setAttribute("method", "post");
+
+        createSmall(form);
 
         hasNotResource(form);
-        createInput("Duration", "duration", form);
-        createInput("Link", "link", form);
+        createInput("Duración", "duration", form, "Duración de la producción", "required");
+        createInput("Link", "link", form, "Dirección donde se encuentra", "required");
+        createInput("Audio", "audio", form, "Ej. 'ES'", "", "MULT");
+        createInput("Subtitulo", "subtitle", form, "Ej. 'ES'", "", "MULT");
+
+
         createButton(addResource, form);
 
         var p = document.createElement("p");
@@ -977,6 +1255,7 @@ function delResourceForm() {
                 }
             }
             form.options[form.options.selectedIndex].remove();
+            event.preventDefault();
         }
     }
 
@@ -986,7 +1265,7 @@ function delResourceForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Delete resource"));
+        h2.appendChild(document.createTextNode("Eliminar recurso"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
@@ -1010,16 +1289,33 @@ function addProductionForm() {
         return function () {
             var title = document.forms["proForm"]["title"].value;
             var publication = document.forms["proForm"]["publication"].value;
+            var nationality = document.forms["proForm"]["nationality"].value;
+            var synopsis = document.forms["proForm"]["synopsis"].value;
+            var image = document.forms["proForm"]["image"].value;
+            var imagePart = image.split("\\");
+            var imageLoc = imagePart[imagePart.length-1];
 
             var select = document.forms["proForm"]["selectPrin"];
             var id = select.value;
+            $('form').validator();
 
             if (title == "" || publication == "") {
                 resultForm(false);
                 throw new EmptyValueException();
             } else {
                 var pro = new Movie(title, publication);
-                pro.image = "images/pDefault.jpg";
+                if (nationality != "") {
+                    pro.nationality = nationality;
+                }
+                if (synopsis != "") {
+                    pro.synopsis = synopsis;
+                }
+
+                if (image != ""){
+                    pro.image = "images/" + imageLoc;
+                }else {
+                    pro.image = "images/pDefault.jpg";
+                }
                 videosystem.addProduction(pro);
 
                 //Director
@@ -1080,6 +1376,7 @@ function addProductionForm() {
                 resultForm(true);
             }
             document.forms["proForm"].reset();
+            event.preventDefault();
         }
     }
 
@@ -1089,16 +1386,24 @@ function addProductionForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Create production"));
+        h2.appendChild(document.createTextNode("Añadir producción"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
         form.setAttribute("id", "form");
         form.setAttribute("name", "proForm");
         form.setAttribute("class", "form-horizontal");
+        form.setAttribute("data-toggle", "validator");
+        form.setAttribute("novalidate", "true");
+        form.setAttribute("method", "post");
 
-        createInput("Title", "title", form);
-        createInput("Publication", "publication", form);
+        createSmall(form);
+
+        createInput("Título", "title", form, "Titulo de la producción", "required");
+        createDate("F. Publicacion", "publication", form, "required");
+        createInput("Imagen", "image", form, "Imagen de la producción", "", "I");
+        createInput("Nacionalidad", "nationality", form, "Ej. 'ES'", "", "D");
+        createInput("Sinopsis", "synopsis", form, "Resumen de la producción");
         createSelect(form, "Directors", "selectPrin", "Director");
         createTable("Categorias", "categories", form);
         createTable("Actores", "actors", form);
@@ -1144,6 +1449,7 @@ function delProductionForm() {
                 }
             }
             form.options[form.options.selectedIndex].remove();
+            event.preventDefault();
         }
     }
 
@@ -1153,7 +1459,7 @@ function delProductionForm() {
         removeChildsElement(divForm);
 
         var h2 = document.createElement("h2");
-        h2.appendChild(document.createTextNode("Delete production"));
+        h2.appendChild(document.createTextNode("Eliminar producción"));
         divForm.appendChild(h2);
 
         var form = document.createElement("form");
@@ -1183,7 +1489,7 @@ function sesionForm() {
         form.setAttribute("name", "catForm");
         form.setAttribute("class", "form-horizontal");
 
-        createInput("Username", "user", form);
+        createInput("Username", "user", form, "Usuario");
 
         var dv = document.createElement("div");
         dv.setAttribute("class", "form-group");

@@ -21,22 +21,22 @@ function createObjects() {
     var u3 = new User("usu3", "Password3", "us3@gmail.com");
     //
     //Directores y actores
-    var d1 = new Person("Quentin", "Tarantino", "2/5/1969");
+    var d1 = new Person("Quentin", "Tarantino", "05/02/1969");
     d1.picture = "images/d1.jpg";
-    var d2 = new Person("Steven", "Spielberg", "5/1/1970");
+    var d2 = new Person("Steven", "Spielberg", "05/01/1970");
     d2.picture = "images/d2.jpg";
-    var d3 = new Person("James", "Camperon", "13/5/1969");
+    var d3 = new Person("James", "Cameron", "12/05/1969");
     d3.picture = "images/d3.jpg";
 
-    var a1 = new Person("Lily", "Collins", "12/9/1977");
+    var a1 = new Person("Lily", "Collins", "12/09/1977");
     a1.picture = "images/a1.jpg";
-    var a2 = new Person("Salma", "Hayek", "15/11/1990");
+    var a2 = new Person("Salma", "Hayek", "02/11/1990");
     a2.picture = "images/a2.jpg";
-    var a3 = new Person("Chris", "Pratt", "7/11/1969");
+    var a3 = new Person("Chris", "Pratt", "07/11/1969");
     a3.picture = "images/a3.jpg";
     //
     //Peliculas y Series
-    var m1 = new Movie("Avatar", "20/1/2006");
+    var m1 = new Movie("Avatar", "09/01/2006");
     m1.nationality = "US";
     m1.synopsis = "Synopsis de Avatar";
     m1.locations = c1;
@@ -45,7 +45,7 @@ function createObjects() {
     m1.resource.audios.push("ES", "EN");
     m1.resource.subtitles.push("ES", "EN");*/
 
-    var m2 = new Movie("In Time", "10/2/2006");
+    var m2 = new Movie("In Time", "10/02/2006");
     m2.nationality = "UK";
     m2.synopsis = "Synopsis de In Time";
     m2.locations = c2;
@@ -72,7 +72,7 @@ function createObjects() {
     s1.resource.audios.push("ES", "EN");
     s1.resource.subtitles.push("ES", "EN");
 
-    var s2 = new Serie("Lost", "12/8/1999");
+    var s2 = new Serie("Lost", "12/08/1999");
     s2.nationality = "CH";
     s2.synopsis = "Synopsis de Lost";
     s2.locations = c2;
