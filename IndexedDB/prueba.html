@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/micss.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <form name="catForm" class="form-horizontal" data-toggle="validator" novalidate="true">
+                <div class="form-group col-sm-4">
+                    <input type="text" class="form-control" name="name" placeholder="Nombre de la categoría" required="required" data-error="Lo sentimos, no puede estar vacío">
+                    <div class="help-block with-errors"></div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="phone_number" class="sr-only">Phone Number: </label>
+                    <input name="phone_number" id="phone_number" placeholder="Phone number" type="text" value=""
+                        required="required" data-error="Please enter your phone number">
+                    <div class="help-block with-errors"></div>
+                </div><!-- close col-->
+            </div><!-- close row-->
+
+            <div class="col-sm-offset-5"><input value="Enviar" class="submit btn btn-primary" type="submit"></div>
+        </div>
+        <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/BaseException.js"></script>
+    <script src="js/videoSystem.js"></script>
+    <script src="js/objects.js"></script>
+    <script src="js/populate.js"></script>
+    <script src="js/forms.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+</body>
+
+</html>

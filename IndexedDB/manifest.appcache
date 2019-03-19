@@ -1,0 +1,13 @@
+CACHE MANIFEST
+js/jquery.js
+js/bootstrap.min.js
+js/BaseException.js
+js/videoSystem.js
+js/objects.js
+js/populate.js
+js/forms.js
+images/
+
+NETWORK:
+*
+index.html
